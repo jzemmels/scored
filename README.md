@@ -7,7 +7,7 @@
 <!-- badges: end -->
 
 An R package to compare cartridge cases and compute similarity scores
-between cartridge cases based on their breech face impressions.
+based on their breech face impressions.
 
 ## Installation
 

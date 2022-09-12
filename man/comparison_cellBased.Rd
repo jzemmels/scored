@@ -10,6 +10,7 @@ comparison_cellBased(
   thetas = seq(-30, 30, by = 3),
   numCells = c(8, 8),
   returnX3Ps = TRUE,
+  maxMissingProp = 0.99,
   sideLengthMultiplier = 3
 )
 }

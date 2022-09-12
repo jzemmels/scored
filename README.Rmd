@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-An R package to calculate similarity scores between cartridge cases based on the breech face impressions.
+An R package to compare cartridge cases and compute similarity scores between cartridge cases based on their breech face impressions.
 
 ## Installation
 

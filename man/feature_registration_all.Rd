@@ -8,8 +8,8 @@ feature_registration_all(comparisonData, id_cols = NULL)
 }
 \arguments{
 \item{comparisonData}{a data frame resulting from a comparison of two
-cartridge cases (for example, output of the \code{comparison_cellBased}
-function)}
+cartridge cases (for example, output of the \code{comparison_cellBased} or
+\code{comparison_fullScan} functions)}
 
 \item{id_cols}{variable(s) to group by prior to calculating the summary
 statistics}
@@ -26,6 +26,6 @@ Calculate all seven registration-based features
 }
 \note{
 This function can be used on comparison data from a full-scan or
-cell-based comparison. For a full-scan comparison, use only
-the average CCF and pairwise-complete correlation
+cell-based comparison. For a full-scan comparison, we recommend using only
+the average CCF and average pairwise-complete correlation
 }

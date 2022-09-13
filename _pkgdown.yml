@@ -30,7 +30,12 @@ reference:
   - densityBasedClusters
   - estimatedRotation
 
+- title: Registration-Based Features
+  contents:
+  - feature_registration_summary
+  - feature_registration_all
+
 - title: Helpers
   contents:
   - comparison_cellBased
-
+  - comparison_fullScan

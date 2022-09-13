@@ -1,0 +1,36 @@
+url: ~
+
+home:
+  title: Compute similarity between cartridge cases
+
+authors:
+  Joseph Zemmels:
+    href: https://jzemmels.github.io/
+  Heike Hofmann:
+    href: https://github.com/heike
+  Susan VanderPlas:
+    href: https://srvanderplas.netlify.app/
+  CSAFE:
+    href: https://forensicstats.org/
+
+template:
+  bootstrap: 5
+  bslib:
+    primary: "#0054AD"
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
+
+reference:
+- title: Density-Based Features
+  contents:
+  - feature_densityBasedAll
+  - feature_densityBasedClusterSize
+  - feature_densityBasedThetaDiff
+  - feature_densityBasedTranslationDiff
+  - densityBasedClusters
+  - estimatedRotation
+
+- title: Helpers
+  contents:
+  - comparison_cellBased
+

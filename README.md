@@ -27,11 +27,16 @@ This is a basic example which shows you how to solve a common problem:
 library(scored)
 
 library(cmcR)
+library(impressions)
 library(tidyverse)
 
 data("K013sA1")
 data("K013sA2")
+
+x3pPlot(K013sA1,K013sA2)
 ```
+
+<img src="man/figures/README-example-1.png" width="100%" />
 
 ``` r
 comparisonData <- comparison_cellBased(reference = K013sA1,target = K013sA2,
@@ -64,4 +69,26 @@ comparisonData %>%
 #>   thetaDiff translationDiff clusterSize
 #>       <dbl>           <dbl>       <dbl>
 #> 1         0            1.16          11
+```
+
+``` r
+comparisonData %>%
+  feature_registration_all()
+#> # A tibble: 1 x 7
+#>   ccfMean  ccfSD pairwiseCompCorMean pairwiseCompCorSD xTransSD yTransSD theta~1
+#>     <dbl>  <dbl>               <dbl>             <dbl>    <dbl>    <dbl>   <dbl>
+#> 1   0.275 0.0853               0.546             0.151     35.7     32.3    17.1
+#> # ... with abbreviated variable name 1: thetaRotSD
+```
+
+``` r
+comparisonDat_fullScan <- comparison_fullScan(K013sA1,K013sA2)
+
+comparisonDat_fullScan %>%
+  feature_registration_all %>%
+  select(ccfMean,pairwiseCompCorMean)
+#> # A tibble: 1 x 2
+#>   ccfMean pairwiseCompCorMean
+#>     <dbl>               <dbl>
+#> 1   0.271               0.405
 ```

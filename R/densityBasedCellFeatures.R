@@ -54,7 +54,7 @@ feature_densityBasedThetaDiff <- function(estimatedThetas,direction,imputeVal = 
   theta1 <- unique(estimatedThetas[direction == "reference vs. target"])
   theta2 <- unique(estimatedThetas[direction == "target vs. reference"])
 
-  if(any(!is.numeric(c(theta1,theta2)))){
+  if(any(!is.numeric(c(theta1,theta2))) | any(is.na(c(theta1,theta2)))){
     return(imputeVal)
   }
 
@@ -85,7 +85,7 @@ feature_densityBasedTranslationDiff <- function(x,y,cluster,direction,imputeVal 
   translationDiff <- sqrt((refVTargTrans$estimTrans_x + targVRefTrans$estimTrans_x)^2 +
                             (refVTargTrans$estimTrans_y + targVRefTrans$estimTrans_y)^2)
 
-  if(!is.numeric(translationDiff)){
+  if(!is.numeric(translationDiff) | is.na(translationDiff)){
     return(imputeVal)
   }
 
@@ -93,8 +93,8 @@ feature_densityBasedTranslationDiff <- function(x,y,cluster,direction,imputeVal 
 
 }
 
-#' Compute the difference in density-estimated translations between two
-#' comparison directions
+#' Compute the average density-based cluster sizes between two comparison
+#' directions
 #' @name feature_densityBasedClusterSize
 #' @export
 feature_densityBasedClusterSize <- function(cluster,direction,imputeVal = 0){
@@ -114,11 +114,11 @@ feature_densityBasedClusterSize <- function(cluster,direction,imputeVal = 0){
 
 }
 
-#' Compute all density-based features
+#' Compute all three density-based features
 #' @name feature_densityBasedAll
 #' @export
 
-feature_densityBasedAll <- function(comparisonData,eps,minPts,id_cols = NULL){
+feature_densityBasedAll <- function(comparisonData_cellBased,eps,minPts,id_cols = NULL){
 
   comparisonData %>%
     group_by(direction) %>%

@@ -5,11 +5,11 @@ title: "R Notebook"
 ```{r}
 library(hexSticker)
 
-knitr::plot_crop("stickerDraft.png")
+knitr::plot_crop("stickerDraft2.png")
 ```
 
 ```{r}
-img <- imager::load.image("stickerDraft.png")
+img <- imager::load.image("stickerDraft2.png")
 
 plt <- img %>%
   as.data.frame() %>%
@@ -23,6 +23,6 @@ plt <- img %>%
   scale_fill_identity() +
   scale_y_reverse()
 
-hexSticker::sticker(plt,package = "scored",p_size = 20,s_x = 1,s_y = .8,s_width = 1.4,s_height = 1.2,white_around_sticker = FALSE,h_fill = "white",h_color = "#1b3d6e",p_color = "#1b3d6e")
+hexSticker::sticker(plt,package = NULL,p_size = 20,s_x = 1,s_y = 1,s_width = 1.4,s_height = 1.2,white_around_sticker = FALSE,h_fill = "white",h_color = "#1b3d6e",p_color = "#1b3d6e")
 ```
 

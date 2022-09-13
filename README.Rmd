@@ -37,10 +37,13 @@ This is a basic example which shows you how to solve a common problem:
 library(scored)
 
 library(cmcR)
+library(impressions)
 library(tidyverse)
 
 data("K013sA1")
 data("K013sA2")
+
+x3pPlot(K013sA1,K013sA2)
 ```
 
 
@@ -55,5 +58,18 @@ comparisonData
 ```{r}
 comparisonData %>%
   feature_densityBasedAll(eps = 5,minPts = 5)
+```
+
+```{r}
+comparisonData %>%
+  feature_registration_all()
+```
+
+```{r}
+comparisonDat_fullScan <- comparison_fullScan(K013sA1,K013sA2)
+
+comparisonDat_fullScan %>%
+  feature_registration_all %>%
+  select(ccfMean,pairwiseCompCorMean)
 ```
 

@@ -57,7 +57,7 @@ comparisonData
 
 ```{r}
 comparisonData %>%
-  feature_densityBasedAll(eps = 5,minPts = 5)
+  feature_densityBased_all(eps = 5,minPts = 5)
 ```
 
 ```{r}
@@ -69,7 +69,7 @@ comparisonData %>%
 comparisonDat_fullScan <- comparison_fullScan(K013sA1,K013sA2)
 
 comparisonDat_fullScan %>%
-  feature_registration_all %>%
+  feature_registration_all() %>%
   select(ccfMean,pairwiseCompCorMean)
 ```
 

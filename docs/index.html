@@ -93,7 +93,7 @@ problem:</p>
 <span class="fu"><a href="https://rdrr.io/pkg/impressions/man/x3pPlot.html" class="external-link">x3pPlot</a></span><span class="op">(</span><span class="va">K013sA1</span>,<span class="va">K013sA2</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-example-1.png" width="100%"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">comparisonData</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/comparison_cellBased.html">comparison_cellBased</a></span><span class="op">(</span>reference <span class="op">=</span> <span class="va">K013sA1</span>,target <span class="op">=</span> <span class="va">K013sA2</span>,
+<code class="sourceCode R"><span class="va">comparisonData</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/comparisonHelpers.html">comparison_cellBased</a></span><span class="op">(</span>reference <span class="op">=</span> <span class="va">K013sA1</span>,target <span class="op">=</span> <span class="va">K013sA2</span>,
                                        thetas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">30</span>,<span class="fl">30</span>,by <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,
                                        returnX3Ps <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
@@ -115,25 +115,25 @@ problem:</p>
 <span class="co">#&gt; #   2: refMissingCount, 3: targMissingCount, 4: jointlyMissing, 5: direction</span>
 <span class="co">#&gt; # i Use `print(n = ...)` to see more rows</span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">comparisonData</span> <span class="op"><a href="https://rdrr.io/pkg/cmcR/man/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="reference/feature_densityBasedAll.html">feature_densityBasedAll</a></span><span class="op">(</span>eps <span class="op">=</span> <span class="fl">5</span>,minPts <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">comparisonData</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="reference/densityBasedFeatures.html">feature_densityBased_all</a></span><span class="op">(</span>eps <span class="op">=</span> <span class="fl">5</span>,minPts <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 3</span>
 <span class="co">#&gt;   thetaDiff translationDiff clusterSize</span>
 <span class="co">#&gt;       &lt;dbl&gt;           &lt;dbl&gt;       &lt;dbl&gt;</span>
 <span class="co">#&gt; 1         0            1.16          11</span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">comparisonData</span> <span class="op"><a href="https://rdrr.io/pkg/cmcR/man/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="reference/feature_registration_all.html">feature_registration_all</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">comparisonData</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="reference/registrationFeatures.html">feature_registration_all</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 7</span>
 <span class="co">#&gt;   ccfMean  ccfSD pairwiseCompCorMean pairwiseCompCorSD xTransSD yTransSD theta~1</span>
 <span class="co">#&gt;     &lt;dbl&gt;  &lt;dbl&gt;               &lt;dbl&gt;             &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;</span>
 <span class="co">#&gt; 1   0.275 0.0853               0.546             0.151     35.7     32.3    17.1</span>
 <span class="co">#&gt; # ... with abbreviated variable name 1: thetaRotSD</span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">comparisonDat_fullScan</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/comparison_fullScan.html">comparison_fullScan</a></span><span class="op">(</span><span class="va">K013sA1</span>,<span class="va">K013sA2</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">comparisonDat_fullScan</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/comparisonHelpers.html">comparison_fullScan</a></span><span class="op">(</span><span class="va">K013sA1</span>,<span class="va">K013sA2</span><span class="op">)</span>
 
-<span class="va">comparisonDat_fullScan</span> <span class="op"><a href="https://rdrr.io/pkg/cmcR/man/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="va">feature_registration_all</span> <span class="op"><a href="https://rdrr.io/pkg/cmcR/man/pipe.html" class="external-link">%&gt;%</a></span>
+<span class="va">comparisonDat_fullScan</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="reference/registrationFeatures.html">feature_registration_all</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ccfMean</span>,<span class="va">pairwiseCompCorMean</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 x 2</span>
 <span class="co">#&gt;   ccfMean pairwiseCompCorMean</span>

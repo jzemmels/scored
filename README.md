@@ -64,7 +64,7 @@ comparisonData
 
 ``` r
 comparisonData %>%
-  feature_densityBasedAll(eps = 5,minPts = 5)
+  feature_densityBased_all(eps = 5,minPts = 5)
 #> # A tibble: 1 x 3
 #>   thetaDiff translationDiff clusterSize
 #>       <dbl>           <dbl>       <dbl>
@@ -85,7 +85,7 @@ comparisonData %>%
 comparisonDat_fullScan <- comparison_fullScan(K013sA1,K013sA2)
 
 comparisonDat_fullScan %>%
-  feature_registration_all %>%
+  feature_registration_all() %>%
   select(ccfMean,pairwiseCompCorMean)
 #> # A tibble: 1 x 2
 #>   ccfMean pairwiseCompCorMean

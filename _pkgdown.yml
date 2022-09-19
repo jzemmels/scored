@@ -23,10 +23,10 @@ template:
 reference:
 - title: Density-Based Features
   contents:
-  - feature_densityBasedAll
-  - feature_densityBasedClusterSize
-  - feature_densityBasedThetaDiff
-  - feature_densityBasedTranslationDiff
+  - feature_densityBased_all
+  - feature_densityBased_clusterSize
+  - feature_densityBased_thetaDiff
+  - feature_densityBased_translationDiff
   - densityBasedClusters
   - estimatedRotation
 

@@ -45,8 +45,65 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">densityBasedClusters</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">eps</span>, <span class="va">minPts</span>, method <span class="op">=</span> <span class="st">"dbscan"</span><span class="op">)</span></code></pre></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
+    <dl><dt>x</dt>
+<dd><p>tibble column containing estimated horizontal translations</p></dd>
+<dt>y</dt>
+<dd><p>tibble column containing estimated vertical translations</p></dd>
+<dt>eps</dt>
+<dd><p>a double representing the neighborhood radius used in the DBSCAN
+algorithm</p></dd>
+<dt>minPts</dt>
+<dd><p>an integer representing the minimum neighborhood size used in
+the DBSCAN algorithm</p></dd>
+<dt>method</dt>
+<dd><p>a character vector that specifies the algorithm used to find
+clusters. Must be either "dbscan" or "hdbscan" or "optics" - see the dbscan
+package for more information.</p></dd>
+</dl></div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>The eps and minPts arguments are used differently depending on the
+method specified. The eps argument is passed to the eps parameter in the
+dbscan::dbscan function if method == "dbscan" and to the eps_cl parameter
+in the dbscan::extractDBSCAN function if method == "optics"</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p>dbscan::dbscan, dbscan::hdbscan, dbscan::optics and
+dbscan::extractDBSCAN</p></div>
+    </div>
 
-  </main></div>
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"K013sA1"</span>,<span class="st">"K013sA2"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">compData</span> <span class="op">&lt;-</span> <span class="fu"><a href="comparison_cellBased.html">comparison_cellBased</a></span><span class="op">(</span>reference <span class="op">=</span> <span class="va">K013sA1</span>,</span>
+<span class="r-in">                                 target <span class="op">=</span> <span class="va">K013sA2</span>,</span>
+<span class="r-in">                                 thetas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>,<span class="fl">0</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">compData</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">direction</span>,<span class="va">theta</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>clust <span class="op">=</span> <span class="fu">densityBasedClusters</span><span class="op">(</span>x<span class="op">=</span><span class="va">x</span>,y<span class="op">=</span><span class="va">y</span>,eps<span class="op">=</span><span class="fl">5</span>,minPts<span class="op">=</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>clustSize <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">clust</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> `summarise()` has grouped output by 'direction'. You can override using the</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> `.groups` argument.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 x 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Groups:   direction [2]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   direction            theta clustSize</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> reference vs. target    -<span style="color: #BB0000;">3</span>         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> reference vs. target     0         7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> reference vs. target     3        10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> target vs. reference    -<span style="color: #BB0000;">3</span>        12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> target vs. reference     0         7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> target vs. reference     3         0</span>
+<span class="r-in"></span>
+</code></pre></div>
+    </div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

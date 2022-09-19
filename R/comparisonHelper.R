@@ -1,59 +1,100 @@
-#' Compare two cartridge case scans using the cell-based comparison procedure
-#' @name comparison_cellBased
-#' @export
-
+#'Estimate the registration between two cartridge case scans using a cell-based
+#'or full scan comparison procedure
+#'
+#'The `comparison_cellBased` function uses a cell-based comparison procedure
+#'implemented in the `cmcR::comparison_allTogether()`. The `comparison_fullScan`
+#'estimates the registration by comparing the full scans.
+#'
+#'@param reference an x3p object
+#'@param target another x3p object
+#'@param thetas a numeric vector of arbitrary length containing rotation values
+#'  to be considered in the registration procedure
+#'@param numCells a numeric vector of length 2 containing the number of cells to
+#'  divide the c(rows,cols) of a cartridge case surface matrix into.
+#'@param returnX3Ps A Boolean to return the cellHeightValues and
+#'  alignedTargetCells for each cell index. Note that setting this argument to
+#'  TRUE is required to calculate the visual diagnostic features
+#'@param maxMissingProp maximum proportion of missing values allowed for each
+#'  cell/region.
+#'@param sideLengthMultiplier ratio between the target region and reference cell
+#'  side lengths. For example, sideLengthMultiplier = 3 implies each region will
+#'  be 9 times larger than its paired reference cell.
+#'
+#'@note The distinction between the "reference" and "target" scans is arbitrary,
+#'  yet necessary for keeping track of the comparison direction in which a
+#'  particular observation was calculated.
+#'
+#'@seealso `cmcR::comparison_allTogether()`
+#'
+#' @examples
+#' data("K013sA1","K013sA2")
+#'
+#' compData_cellBased <- comparison_cellBased(reference = K013sA1,
+#'                                            target = K013sA2,
+#'                                            thetas = c(-3,0,3))
+#'
+#'compData_cellBased
+#'
+#' compData_fullScan <- comparison_fullScan(reference = K013sA1,
+#'                                          target = K013sA2,
+#'                                          thetas = c(-3,0,3))
+#'
+#'compData_fullScan
+#'
+#'@rdname comparisonHelpers
+#'@export
 comparison_cellBased <- function(reference,target,thetas = seq(-30,30,by = 3),
-                                 numCells = c(8,8),returnX3Ps = TRUE,
-                                 maxMissingProp = .99,sideLengthMultiplier = 3){
+                                 numCells = c(8,8),
+                                 maxMissingProp = .99,sideLengthMultiplier = 3,returnX3Ps = TRUE){
 
-  bind_rows(map_dfr(thetas,
-                    ~ {
+  dplyr::bind_rows(purrr::map_dfr(thetas,
+                                  ~ {
 
-                      cmcR::comparison_allTogether(reference,target,theta = .,
-                                                   numCells = numCells,returnX3Ps = returnX3Ps,
-                                                   sideLengthMultiplier = sideLengthMultiplier,
-                                                   maxMissingProp = maxMissingProp)
+                                    cmcR::comparison_allTogether(reference,target,theta = .,
+                                                                 numCells = numCells,
+                                                                 returnX3Ps = returnX3Ps,
+                                                                 sideLengthMultiplier = sideLengthMultiplier,
+                                                                 maxMissingProp = maxMissingProp)
 
-                    }) %>%
-              mutate(direction = "reference vs. target"),
-            map_dfr(thetas,
-                    ~ {
+                                  }) %>%
+                     dplyr::mutate(direction = "reference vs. target"),
+                   purrr::map_dfr(thetas,
+                                  ~ {
 
-                      cmcR::comparison_allTogether(target,reference,theta = .,
-                                                   numCells = numCells,returnX3Ps = returnX3Ps,
-                                                   sideLengthMultiplier = sideLengthMultiplier,
-                                                   maxMissingProp = maxMissingProp)
+                                    cmcR::comparison_allTogether(target,reference,theta = .,
+                                                                 numCells = numCells,
+                                                                 returnX3Ps = returnX3Ps,
+                                                                 sideLengthMultiplier = sideLengthMultiplier,
+                                                                 maxMissingProp = maxMissingProp)
 
-                    }) %>%
-              mutate(direction = "target vs. reference"))
+                                  }) %>%
+                     dplyr::mutate(direction = "target vs. reference"))
 
 }
 
-#' Compare two cartridge case scans by estimating the alignment of the full
-#' scans
-#' @name comparison_fullScan
+#'@rdname comparisonHelpers
 #' @export
-comparison_fullScan <- function(reference,target,thetas = seq(-30,30,by = 3)){
+comparison_fullScan <- function(reference,target,thetas = seq(-30,30,by = 3),returnX3Ps = TRUE){
 
-  bind_rows(map_dfr(thetas,
-                    ~ {
+  dplyr::bind_rows(purrr::map_dfr(thetas,
+                                  ~ {
 
-                      cmcR::comparison_allTogether(reference,target,theta = .,
-                                                   numCells = c(1,1),returnX3Ps = TRUE,
-                                                   sideLengthMultiplier = 1.1,
-                                                   maxMissingProp = .99)
+                                    cmcR::comparison_allTogether(reference,target,theta = .,
+                                                                 numCells = c(1,1),returnX3Ps = returnX3Ps,
+                                                                 sideLengthMultiplier = 1.1,
+                                                                 maxMissingProp = .99)
 
-                    }) %>%
-              mutate(direction = "reference vs. target"),
-            map_dfr(thetas,
-                    ~ {
+                                  }) %>%
+                     dplyr::mutate(direction = "reference vs. target"),
+                   purrr::map_dfr(thetas,
+                                  ~ {
 
-                      cmcR::comparison_allTogether(target,reference,theta = .,
-                                                   numCells = c(1,1),returnX3Ps = TRUE,
-                                                   sideLengthMultiplier = 1.1,
-                                                   maxMissingProp = .99)
+                                    cmcR::comparison_allTogether(target,reference,theta = .,
+                                                                 numCells = c(1,1),returnX3Ps = returnX3Ps,
+                                                                 sideLengthMultiplier = 1.1,
+                                                                 maxMissingProp = .99)
 
-                    }) %>%
-              mutate(direction = "target vs. reference"))
+                                  }) %>%
+                     dplyr::mutate(direction = "target vs. reference"))
 
 }

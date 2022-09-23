@@ -35,6 +35,12 @@ reference:
   - feature_registration_summary
   - feature_registration_all
 
+- title: Visual Diagnostic-Based Features
+  contents:
+  - feature_visualDiagnostic_all
+  - feature_visualDiagnostic_neighborhoodSizeSummary
+  - feature_visualDiagnostic_scanDifferenceCor
+
 - title: Helpers
   contents:
   - comparison_cellBased

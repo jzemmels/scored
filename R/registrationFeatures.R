@@ -25,6 +25,9 @@
 #'  recommend using only the average CCF and average pairwise-complete
 #'  correlation.
 #'
+#'@note To calculate  the visual diagnostic features, you must set the
+#'  returnX3Ps argument in the `comparison_cellBased()` or
+#'  `comparison_fullScan()` functions to TRUE.
 #'
 #' @examples
 #' data("K013sA1","K013sA2")

@@ -198,4 +198,21 @@ comparisonData %>%
 
 ### Visual Diagnostic-based Features
 
-More info coming soon…
+``` r
+comparisonDat_fullScan_estimRotation <- comparison_fullScan(K013sA1,K013sA2,
+                                                            returnX3Ps = TRUE,
+                                                            thetas = -3)
+
+comparisonDat_fullScan_estimRotation %>%
+  group_by(cellIndex,direction) %>%
+  feature_visualDiagnostic_all()
+#> # A tibble: 2 x 8
+#> # Groups:   cellIndex [1]
+#>   cellIndex direction            neigh~1 neigh~2 neigh~3 neigh~4 diffe~5 diffe~6
+#>   <chr>     <chr>                  <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+#> 1 1, 1      reference vs. target    74.8      NA    887.      NA -0.0343      NA
+#> 2 1, 1      target vs. reference    96.4      NA    824.      NA  0.0876      NA
+#> # ... with abbreviated variable names 1: neighborhoodSizeAve_ave,
+#> #   2: neighborhoodSizeAve_sd, 3: neighborhoodSizeSD_ave,
+#> #   4: neighborhoodSizeSD_sd, 5: differenceCor_ave, 6: differenceCor_sd
+```

@@ -50,6 +50,10 @@ The \code{feature_registration_all} function can be used on comparison data
 from a full-scan or cell-based comparison. For a full-scan comparison, we
 recommend using only the average CCF and average pairwise-complete
 correlation.
+
+To calculate  the visual diagnostic features, you must set the
+returnX3Ps argument in the \code{comparison_cellBased()} or
+\code{comparison_fullScan()} functions to TRUE.
 }
 \examples{
 data("K013sA1","K013sA2")

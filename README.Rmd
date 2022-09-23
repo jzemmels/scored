@@ -134,4 +134,13 @@ comparisonData %>%
 
 ### Visual Diagnostic-based Features
 
-More info coming soon...
+```{r}
+comparisonDat_fullScan_estimRotation <- comparison_fullScan(K013sA1,K013sA2,
+                                                            returnX3Ps = TRUE,
+                                                            thetas = -3)
+
+comparisonDat_fullScan_estimRotation %>%
+  group_by(cellIndex,direction) %>%
+  feature_visualDiagnostic_all()
+```
+

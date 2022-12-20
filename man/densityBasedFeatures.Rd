@@ -17,17 +17,11 @@ feature_densityBased_all(
   id_cols = NULL
 )
 
-feature_densityBased_thetaDiff(estimatedThetas, direction, imputeVal = 180)
+feature_densityBased_thetaDiff(estimatedThetas, direction, imputeVal = NA)
 
-feature_densityBased_translationDiff(
-  x,
-  y,
-  cluster,
-  direction,
-  imputeVal = 1000
-)
+feature_densityBased_translationDiff(x, y, cluster, direction, imputeVal = NA)
 
-feature_densityBased_clusterSize(cluster, direction, imputeVal = 0)
+feature_densityBased_clusterSize(cluster, direction, imputeVal = NA)
 
 densityBasedClusters(x, y, eps, minPts, method = "dbscan")
 

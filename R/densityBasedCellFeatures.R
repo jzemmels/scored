@@ -89,7 +89,7 @@ feature_densityBased_all <- function(comparisonData_cellBased,eps,minPts,method 
 #' @rdname densityBasedFeatures
 #' @export
 
-feature_densityBased_thetaDiff <- function(estimatedThetas,direction,imputeVal = 180){
+feature_densityBased_thetaDiff <- function(estimatedThetas,direction,imputeVal = NA){
 
   theta1 <- unique(estimatedThetas[direction == "reference vs. target"])
   theta2 <- unique(estimatedThetas[direction == "target vs. reference"])
@@ -104,7 +104,7 @@ feature_densityBased_thetaDiff <- function(estimatedThetas,direction,imputeVal =
 
 #' @rdname densityBasedFeatures
 #' @export
-feature_densityBased_translationDiff <- function(x,y,cluster,direction,imputeVal = 1000){
+feature_densityBased_translationDiff <- function(x,y,cluster,direction,imputeVal = NA){
 
   refVTargTrans <- data.frame(x=x,y=y,cluster=cluster,direction=direction) %>%
     dplyr::filter(cluster > 0 & direction == "reference vs. target") %>%
@@ -133,7 +133,7 @@ feature_densityBased_translationDiff <- function(x,y,cluster,direction,imputeVal
 
 #' @rdname densityBasedFeatures
 #' @export
-feature_densityBased_clusterSize <- function(cluster,direction,imputeVal = 0){
+feature_densityBased_clusterSize <- function(cluster,direction,imputeVal = NA){
 
   clusterSizes <- data.frame(direction = direction,cluster = cluster) %>%
     dplyr::filter(cluster > 0) %>%

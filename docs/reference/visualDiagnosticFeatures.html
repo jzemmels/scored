@@ -61,13 +61,15 @@ with <code>feature_visualDiagnostic_neighborhoodSizeSummary()</code> and
   <span class="va">cellHeightValues</span>,
   <span class="va">alignedTargetCell</span>,
   summaryFun <span class="op">=</span> <span class="va">mean</span>,
-  thresholdMultiplier <span class="op">=</span> <span class="fl">1</span>
+  thresholdMultiplier <span class="op">=</span> <span class="fl">1</span>,
+  imputeVal <span class="op">=</span> <span class="fl">1000</span>
 <span class="op">)</span>
 
 <span class="fu">feature_visualDiagnostic_scanDifferenceCor</span><span class="op">(</span>
   <span class="va">cellHeightValues</span>,
   <span class="va">alignedTargetCell</span>,
-  thresholdMultiplier <span class="op">=</span> <span class="fl">1</span>
+  thresholdMultiplier <span class="op">=</span> <span class="fl">1</span>,
+  imputeVal <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -96,6 +98,9 @@ scan's aligned cells (as returned by <code><a href="comparisonHelpers.html">comp
 <dt>summaryFun</dt>
 <dd><p>function that will be used to summarize the neighborhood
 sizes</p></dd>
+<dt>imputeVal</dt>
+<dd><p>value to return if the feature calculation results in a
+non-numeric (i.e., NA, NULL) value</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>

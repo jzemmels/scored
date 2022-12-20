@@ -2,6 +2,7 @@
 % Please edit documentation in R/visualDiagnosticFeatures.R
 \name{feature_visualDiagnostic_all}
 \alias{feature_visualDiagnostic_all}
+\alias{feature_visualDiagnostic_filteredRatio}
 \alias{feature_visualDiagnostic_neighborhoodSizeSummary}
 \alias{feature_visualDiagnostic_scanDifferenceCor}
 \title{Calculate features based on visual diagnostic plots}
@@ -12,17 +13,25 @@ feature_visualDiagnostic_all(
   id_cols = NULL
 )
 
+feature_visualDiagnostic_filteredRatio(
+  cellHeightValues,
+  alignedTargetCell,
+  thresholdMultiplier = 1
+)
+
 feature_visualDiagnostic_neighborhoodSizeSummary(
   cellHeightValues,
   alignedTargetCell,
   summaryFun = mean,
-  thresholdMultiplier = 1
+  thresholdMultiplier = 1,
+  imputeVal = NA
 )
 
 feature_visualDiagnostic_scanDifferenceCor(
   cellHeightValues,
   alignedTargetCell,
-  thresholdMultiplier = 1
+  thresholdMultiplier = 1,
+  imputeVal = NA
 )
 }
 \arguments{
@@ -48,6 +57,9 @@ scan's aligned cells (as returned by \code{comparison_cellBased()} or
 
 \item{summaryFun}{function that will be used to summarize the neighborhood
 sizes}
+
+\item{imputeVal}{value to return if the feature calculation results in a
+non-numeric (i.e., NA, NULL) value}
 }
 \description{
 The \code{feature_visualDiagnostic_all()} calculates the six visual

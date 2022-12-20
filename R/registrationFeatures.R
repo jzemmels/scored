@@ -62,50 +62,50 @@ feature_registration_all <- function(comparisonData,id_cols = NULL){
                                                             fft_ccf = fft_ccf,
                                                             summaryVar = fft_ccf,
                                                             summaryFun = mean,
-                                                            imputeVal = -1),
+                                                            imputeVal = NA),
                      ccfSD = feature_registration_summary(cellIndex = cellIndex,
                                                           direction = direction,
                                                           fft_ccf = fft_ccf,
                                                           summaryVar = fft_ccf,
                                                           summaryFun = sd,
-                                                          imputeVal = 1000),
+                                                          imputeVal = NA),
                      pairwiseCompCorMean = feature_registration_summary(cellIndex = cellIndex,
                                                                         direction = direction,
                                                                         fft_ccf = fft_ccf,
                                                                         summaryVar = pairwiseCompCor,
                                                                         summaryFun = mean,
-                                                                        imputeVal = -1),
+                                                                        imputeVal = NA),
                      pairwiseCompCorSD = feature_registration_summary(cellIndex = cellIndex,
                                                                       direction = direction,
                                                                       fft_ccf = fft_ccf,
                                                                       summaryVar = pairwiseCompCor,
                                                                       summaryFun = sd,
-                                                                      imputeVal = 1000),
+                                                                      imputeVal = NA),
                      xTransSD = feature_registration_summary(cellIndex = cellIndex,
                                                              direction = direction,
                                                              fft_ccf = fft_ccf,
                                                              summaryVar = x,
                                                              summaryFun = sd,
-                                                             imputeVal = 1000),
+                                                             imputeVal = NA),
                      yTransSD = feature_registration_summary(cellIndex = cellIndex,
                                                              direction = direction,
                                                              fft_ccf = fft_ccf,
                                                              summaryVar = y,
                                                              summaryFun = sd,
-                                                             imputeVal = 1000),
+                                                             imputeVal = NA),
                      thetaRotSD = feature_registration_summary(cellIndex = cellIndex,
                                                                direction = direction,
                                                                fft_ccf = fft_ccf,
                                                                summaryVar = theta,
                                                                summaryFun = sd,
-                                                               imputeVal = 1000))
+                                                               imputeVal = NA))
 
 }
 
 #' @rdname registrationFeatures
 #' @export
 feature_registration_summary <- function(cellIndex,direction,fft_ccf,summaryVar,
-                                         summaryFun = mean,imputeVal = -1){
+                                         summaryFun = mean,imputeVal = NA){
 
   ret <- data.frame(cellIndex = cellIndex,
                     direction = direction,

@@ -14,7 +14,7 @@ feature_registration_summary(
   fft_ccf,
   summaryVar,
   summaryFun = mean,
-  imputeVal = -1
+  imputeVal = NA
 )
 }
 \arguments{

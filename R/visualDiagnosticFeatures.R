@@ -22,6 +22,8 @@
 #'  `comparison_fullScan()`)
 #'@param summaryFun function that will be used to summarize the neighborhood
 #'  sizes
+#'@param imputeVal value to return if the feature calculation results in a
+#'  non-numeric (i.e., NA, NULL) value
 #'
 #'@note The `feature_visualDiagnostic_all` function can be used on comparison
 #'  data from a full-scan or cell-based comparison. For a full-scan comparison,
@@ -66,7 +68,10 @@ feature_visualDiagnostic_all <- function(comparisonData,
                                                                                         thresholdMultiplier = thresholdMultiplier),
                   differenceCor = feature_visualDiagnostic_scanDifferenceCor(cellHeightValues = cellHeightValues,
                                                                              alignedTargetCell = alignedTargetCell,
-                                                                             thresholdMultiplier = thresholdMultiplier))
+                                                                             thresholdMultiplier = thresholdMultiplier),
+                  filteredRatio = feature_visualDiagnostic_filteredRatio(cellHeightValues = cellHeightValues,
+                                                                         alignedTargetCell = alignedTargetCell,
+                                                                         thresholdMultiplier = thresholdMultiplier))
 
   if(!is.null(id_cols)){
     diagnosticFeatures <- dplyr::group_by(diagnosticFeatures,id_cols)
@@ -78,7 +83,32 @@ feature_visualDiagnostic_all <- function(comparisonData,
                      neighborhoodSizeSD_ave = mean(neighborhoodSizeSD,na.rm = TRUE),
                      neighborhoodSizeSD_sd = sd(neighborhoodSizeSD,na.rm = TRUE),
                      differenceCor_ave = mean(differenceCor,na.rm = TRUE),
-                     differenceCor_sd = sd(differenceCor,na.rm = TRUE))
+                     differenceCor_sd = sd(differenceCor,na.rm = TRUE),
+                     filteredRatio_ave = mean(filteredRatio),
+                     filteredRatio_sd = sd(filteredRatio))
+
+}
+
+#' @rdname visualDiagnosticFeatures
+#' @export
+feature_visualDiagnostic_filteredRatio <- function(cellHeightValues,
+                                                   alignedTargetCell,
+                                                   thresholdMultiplier = 1){
+
+  purrr::map2_dbl(cellHeightValues,
+                  alignedTargetCell,
+                  function(x3p1,x3p2){
+
+                    cutoffThresh <- impressions::x3p_sd(x3p1,x3p2)
+
+                    averageBinarized <- x3p1 %>%
+                      impressions::x3p_to_dataFrame(preserveResolution = FALSE) %>%
+                      dplyr::mutate(value = (abs(c({x3p1$surface.matrix - x3p2$surface.matrix})) > cutoffThresh)) %>%
+                      summarise(filteredRatio = sum(!value,na.rm = TRUE)/sum(value,na.rm = TRUE)) %>%
+                      pull(filteredRatio)
+
+
+                  })
 
 }
 
@@ -87,7 +117,8 @@ feature_visualDiagnostic_all <- function(comparisonData,
 feature_visualDiagnostic_neighborhoodSizeSummary <- function(cellHeightValues,
                                                              alignedTargetCell,
                                                              summaryFun = mean,
-                                                             thresholdMultiplier = 1){
+                                                             thresholdMultiplier = 1,
+                                                             imputeVal = NA){
 
   purrr::map2_dbl(cellHeightValues,
                   alignedTargetCell,
@@ -115,8 +146,7 @@ feature_visualDiagnostic_neighborhoodSizeSummary <- function(cellHeightValues,
                     averageMat[is.na(averageMat)] <- 0
 
                     # we pad the matrix so that the contours one the edge blobs are properly
-                    # identified. the padding is removed in the last lines of the creation of
-                    # the outline object below
+                    # identified.
                     averageMat  <- averageMat %>%
                       imager::as.cimg() %>%
                       imager::pad(nPix = 10,axes = "xy",val = 0)
@@ -133,7 +163,13 @@ feature_visualDiagnostic_neighborhoodSizeSummary <- function(cellHeightValues,
                       dplyr::tally() %>%
                       dplyr::pull(n)
 
-                    return(summaryFun(blobSizes,na.rm = TRUE))
+                    ret <- summaryFun(blobSizes,na.rm = TRUE)
+
+                    if(is.null(ret) | is.na(ret)){
+                      return(imputeVal)
+                    }
+
+                    return(ret)
 
                   })
 
@@ -143,7 +179,8 @@ feature_visualDiagnostic_neighborhoodSizeSummary <- function(cellHeightValues,
 #' @export
 feature_visualDiagnostic_scanDifferenceCor <- function(cellHeightValues,
                                                        alignedTargetCell,
-                                                       thresholdMultiplier = 1){
+                                                       thresholdMultiplier = 1,
+                                                       imputeVal = NA){
 
   purrr::map2_dbl(cellHeightValues,alignedTargetCell,
                   function(x3p1,x3p2){
@@ -160,9 +197,15 @@ feature_visualDiagnostic_scanDifferenceCor <- function(cellHeightValues,
                                                                y = c(x3p1$surface.matrix),
                                                                thresh = cutoffThresh)
 
-                    return(cor(c(x3p1Differences$surface.matrix),
+                    ret <- cor(c(x3p1Differences$surface.matrix),
                                c(x3p2Differences$surface.matrix),
-                               use = "pairwise.complete.obs"))
+                               use = "pairwise.complete.obs")
+
+                    if(is.null(ret) | is.na(ret)){
+                      return(imputeVal)
+                    }
+
+                    return(ret)
 
                   })
 

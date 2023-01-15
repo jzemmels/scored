@@ -84,8 +84,8 @@ feature_visualDiagnostic_all <- function(comparisonData,
                      neighborhoodSizeSD_sd = sd(neighborhoodSizeSD,na.rm = TRUE),
                      differenceCor_ave = mean(differenceCor,na.rm = TRUE),
                      differenceCor_sd = sd(differenceCor,na.rm = TRUE),
-                     filteredRatio_ave = mean(filteredRatio),
-                     filteredRatio_sd = sd(filteredRatio))
+                     filteredRatio_ave = mean(filteredRatio,na.rm = TRUE),
+                     filteredRatio_sd = sd(filteredRatio,na.rm = TRUE))
 
 }
 

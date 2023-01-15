@@ -10,7 +10,7 @@
 #'  results from the cell-based or full scan comparison procedure
 #'@param cellIndex tibble column containing cell indices
 #'@param direction tibble column indicating whether the associated row came from
-#'  the "reference vs. target" or "target vs. reference" comparison
+#'  the "reference_vs_target" or "target_vs_reference" comparison
 #'@param fft_ccf tibble column containing cross-correlation function values
 #'@param summaryVar tibble column that is to be summarized
 #'@param summaryFun function that will be used to summarize the values in the

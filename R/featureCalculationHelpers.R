@@ -17,27 +17,39 @@ feature_aLaCarte <- function(comparisonData,features = "all",id_cols = NULL,quie
 
   optionalParams <- list(...)
 
-  aLaCarteFeatures <- data.frame(dummyCol = NA)
+  aLaCarteFeatures <- data.frame(direction = c("reference_vs_target","target_vs_reference"))
 
-  if("registration" %in% features | features == "all"){
+  if("registration" %in% features | all(features == "all")){
 
+    # these two columns contain x3ps and really slow down computation of
+    # features. They aren't needed for this step
     if(any(c("cellHeightValues","alignedTargetCell") %in% names(comparisonData))){
       compData <- comparisonData %>%
         select(-c(cellHeightValues,alignedTargetCell))
+    }
+    else{
+      compData <- comparisonData
     }
 
     registrationFeatures <- feature_registration_all(comparisonData = compData,
                                                      id_cols = id_cols)
 
-    aLaCarteFeatures <- bind_cols(aLaCarteFeatures,registrationFeatures)
+    aLaCarteFeatures <- bind_cols(aLaCarteFeatures,
+                                  registrationFeatures %>%
+                                    select(-direction))
 
   }
 
-  if("density" %in% features | features == "all"){
+  # these two columns contain x3ps and really slow down computation of
+  # features. They aren't needed for this step
+  if("density" %in% features | all(features == "all")){
 
     if(any(c("cellHeightValues","alignedTargetCell") %in% names(comparisonData))){
       compData <- comparisonData %>%
         select(-c(cellHeightValues,alignedTargetCell))
+    }
+    else{
+      compData <- comparisonData
     }
 
     # default to certain parameter values if not otherwise specified
@@ -75,7 +87,7 @@ feature_aLaCarte <- function(comparisonData,features = "all",id_cols = NULL,quie
 
   }
 
-  if("diagnostic" %in% features | features == "all"){
+  if("visual" %in% features | all(features == "all")){
 
     stopifnot("cellHeightValues" %in% names(comparisonData) & "alignedTargetCell" %in% names(comparisonData))
 
@@ -85,13 +97,13 @@ feature_aLaCarte <- function(comparisonData,features = "all",id_cols = NULL,quie
                                                          group_by(direction),
                                                        id_cols = id_cols)
 
-    aLaCarteFeatures <- bind_cols(aLaCarteFeatures %>% select(-direction),
-                                  diagnosticFeatures)
+    aLaCarteFeatures <- bind_cols(aLaCarteFeatures,
+                                  diagnosticFeatures %>%
+                                    select(-direction))
 
   }
 
   return(aLaCarteFeatures %>%
-           select(-dummyCol) %>%
            select(c(direction,everything())))
 
 }

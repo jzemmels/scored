@@ -74,13 +74,14 @@ feature_densityBased_all <- function(comparisonData_cellBased,eps,minPts,method 
                                                  method = method)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(thetaDiff = feature_densityBased_thetaDiff(estimatedThetas = theta,
-                                                            direction = direction),
+                                                             direction = direction),
                   translationDiff = feature_densityBased_translationDiff(x=x,
-                                                                        y=y,
-                                                                        cluster=cluster,
-                                                                        direction=direction),
+                                                                         y=y,
+                                                                         cluster=cluster,
+                                                                         direction=direction),
                   clusterSize = feature_densityBased_clusterSize(cluster=cluster,
-                                                                direction=direction)) %>%
+                                                                 direction=direction),
+                  clusterInd = !is.na(clusterSize)) %>%
     dplyr::select(id_cols,thetaDiff,translationDiff,clusterSize) %>%
     dplyr::distinct()
 
@@ -91,8 +92,8 @@ feature_densityBased_all <- function(comparisonData_cellBased,eps,minPts,method 
 
 feature_densityBased_thetaDiff <- function(estimatedThetas,direction,imputeVal = NA){
 
-  theta1 <- unique(estimatedThetas[direction == "reference vs. target"])
-  theta2 <- unique(estimatedThetas[direction == "target vs. reference"])
+  theta1 <- unique(estimatedThetas[direction == "reference_vs_target"])
+  theta2 <- unique(estimatedThetas[direction == "target_vs_reference"])
 
   if(any(!is.numeric(c(theta1,theta2))) | any(is.na(c(theta1,theta2)))){
     return(imputeVal)
@@ -107,12 +108,12 @@ feature_densityBased_thetaDiff <- function(estimatedThetas,direction,imputeVal =
 feature_densityBased_translationDiff <- function(x,y,cluster,direction,imputeVal = NA){
 
   refVTargTrans <- data.frame(x=x,y=y,cluster=cluster,direction=direction) %>%
-    dplyr::filter(cluster > 0 & direction == "reference vs. target") %>%
+    dplyr::filter(cluster > 0 & direction == "reference_vs_target") %>%
     dplyr::summarise(estimTrans_x = mean(x),
                      estimTrans_y = mean(y))
 
   targVRefTrans <- data.frame(x=x,y=y,cluster=cluster,direction=direction) %>%
-    dplyr::filter(cluster > 0 & direction == "target vs. reference") %>%
+    dplyr::filter(cluster > 0 & direction == "target_vs_reference") %>%
     dplyr::summarise(estimTrans_x = mean(x),
                      estimTrans_y = mean(y))
 
@@ -182,10 +183,32 @@ estimatedRotation <- function(x,y,theta){
     dplyr::group_split() %>%
     purrr::map_dfr(function(dat){
 
-      densEstim <- MASS::kde2d(x = dat$x,y = dat$y)
+      # kde2d throws an error if there aren't 2+ points
+      if(nrow(dat) > 1){
 
-      data.frame(highestDens = max(densEstim$z),
-                 theta = unique(dat$theta))
+        if(diff(quantile(dat$x, c(0.25, 0.75))) == 0){
+          closestToThirdQuartile <- dat$x[which.min(abs(dat$x - quantile(dat$x,.75)))]
+
+          dat$x[dat$x == closestToThirdQuartile] <-
+            dat$x[dat$x == closestToThirdQuartile] + rnorm(n = length(dat$x[dat$x == closestToThirdQuartile]))
+        }
+        if(diff(quantile(dat$y, c(0.25, 0.75))) == 0){
+          closestToThirdQuartile <- dat$y[which.min(abs(dat$y - quantile(dat$y,.75)))]
+
+          dat$y[dat$y == closestToThirdQuartile] <-
+            dat$y[dat$y == closestToThirdQuartile] + rnorm(n = length(dat$y[dat$y == closestToThirdQuartile]))
+        }
+
+        densEstim <- MASS::kde2d(x = dat$x,y = dat$y)
+
+        return(data.frame(highestDens = max(densEstim$z),
+                          theta = unique(dat$theta)))
+
+      }
+      else{
+        return(data.frame(highestDens = 0,
+                          theta = unique(dat$theta)))
+      }
 
     }) %>%
     dplyr::filter(highestDens == max(highestDens)) %>%

@@ -43,32 +43,62 @@
 #'
 #'@rdname comparisonHelpers
 #'@export
-comparison_cellBased <- function(reference,target,thetas = seq(-30,30,by = 3),
+comparison_cellBased <- function(reference,target,
+                                 direction = "one",
+                                 thetas = seq(-30,30,by = 3),
                                  numCells = c(8,8),
-                                 maxMissingProp = .99,sideLengthMultiplier = 3,returnX3Ps = TRUE){
+                                 maxMissingProp = .99,sideLengthMultiplier = 3,
+                                 returnX3Ps = TRUE){
 
-  dplyr::bind_rows(purrr::map_dfr(thetas,
-                                  ~ {
+  # you may want to compare the scans using a different theta grid in the two
+  # directions
+  stopifnot(((direction == "one" & is.vector(thetas)) | (direction == "both" & is.list(thetas) & length(thetas) == 2)))
 
-                                    cmcR::comparison_allTogether(reference,target,theta = .,
-                                                                 numCells = numCells,
-                                                                 returnX3Ps = returnX3Ps,
-                                                                 sideLengthMultiplier = sideLengthMultiplier,
-                                                                 maxMissingProp = maxMissingProp)
+  if(direction == "both"){
 
-                                  }) %>%
-                     dplyr::mutate(direction = "reference vs. target"),
-                   purrr::map_dfr(thetas,
-                                  ~ {
+    thetas_refToTarget <- thetas[[1]]
+    thetas_targetToRef <- thetas[[2]]
 
-                                    cmcR::comparison_allTogether(target,reference,theta = .,
-                                                                 numCells = numCells,
-                                                                 returnX3Ps = returnX3Ps,
-                                                                 sideLengthMultiplier = sideLengthMultiplier,
-                                                                 maxMissingProp = maxMissingProp)
+    ret <- dplyr::bind_rows(purrr::map_dfr(thetas_refToTarget,
+                                           ~ {
 
-                                  }) %>%
-                     dplyr::mutate(direction = "target vs. reference"))
+                                             cmcR::comparison_allTogether(reference,target,theta = .,
+                                                                          numCells = numCells,
+                                                                          returnX3Ps = returnX3Ps,
+                                                                          sideLengthMultiplier = sideLengthMultiplier,
+                                                                          maxMissingProp = maxMissingProp)
+
+                                           }) %>%
+                              dplyr::mutate(direction = "reference_vs_target"),
+                            purrr::map_dfr(thetas_targetToRef,
+                                           ~ {
+
+                                             cmcR::comparison_allTogether(target,reference,theta = .,
+                                                                          numCells = numCells,
+                                                                          returnX3Ps = returnX3Ps,
+                                                                          sideLengthMultiplier = sideLengthMultiplier,
+                                                                          maxMissingProp = maxMissingProp)
+
+                                           }) %>%
+                              dplyr::mutate(direction = "target_vs_reference"))
+  }
+  else{
+
+    ret <- purrr::map_dfr(thetas,
+                          ~ {
+
+                            cmcR::comparison_allTogether(reference,target,theta = .,
+                                                         numCells = numCells,
+                                                         returnX3Ps = returnX3Ps,
+                                                         sideLengthMultiplier = sideLengthMultiplier,
+                                                         maxMissingProp = maxMissingProp)
+
+                          })
+
+
+  }
+
+  return(ret)
 
 }
 
@@ -85,7 +115,7 @@ comparison_fullScan <- function(reference,target,thetas = seq(-30,30,by = 3),ret
                                                                  maxMissingProp = .99)
 
                                   }) %>%
-                     dplyr::mutate(direction = "reference vs. target"),
+                     dplyr::mutate(direction = "reference_vs_target"),
                    purrr::map_dfr(thetas,
                                   ~ {
 
@@ -95,6 +125,6 @@ comparison_fullScan <- function(reference,target,thetas = seq(-30,30,by = 3),ret
                                                                  maxMissingProp = .99)
 
                                   }) %>%
-                     dplyr::mutate(direction = "target vs. reference"))
+                     dplyr::mutate(direction = "target_vs_reference"))
 
 }

@@ -52,12 +52,21 @@ comparison_cellBased <- function(reference,target,
 
   # you may want to compare the scans using a different theta grid in the two
   # directions
-  stopifnot(((direction == "one" & is.vector(thetas)) | (direction == "both" & is.list(thetas) & length(thetas) == 2)))
+  stopifnot(direction %in% c("one","both"))
 
   if(direction == "both"){
 
-    thetas_refToTarget <- thetas[[1]]
-    thetas_targetToRef <- thetas[[2]]
+    if(is.list(thetas) & length(thetas) == 2){
+      thetas_refToTarget <- thetas[[1]]
+      thetas_targetToRef <- thetas[[2]]
+    }
+    else{
+      thetas_refToTarget <- thetas
+      thetas_targetToRef <- thetas
+    }
+
+    stopifnot("When direction = 'both,' thetas should be a single numeric vector or a list of two numeric vectors for each direction" = is.vector(thetas_refToTarget) & is.vector(thetas_targetToRef))
+
 
     ret <- dplyr::bind_rows(purrr::map_dfr(thetas_refToTarget,
                                            ~ {
@@ -83,6 +92,8 @@ comparison_cellBased <- function(reference,target,
                               dplyr::mutate(direction = "target_vs_reference"))
   }
   else{
+
+    stopifnot("When direction = 'one,' thetas should be a single numeric vector" = is.vector(thetas))
 
     ret <- purrr::map_dfr(thetas,
                           ~ {

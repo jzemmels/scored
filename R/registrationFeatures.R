@@ -69,7 +69,7 @@ feature_registration_all <- function(comparisonData,id_cols = NULL){
                                                           summaryVar = fft_ccf,
                                                           summaryFun = sd,
                                                           imputeVal = NA),
-                     pairwiseCompCorMean = feature_registration_summary(cellIndex = cellIndex,
+                     pairwiseCompCorAve = feature_registration_summary(cellIndex = cellIndex,
                                                                         direction = direction,
                                                                         fft_ccf = fft_ccf,
                                                                         summaryVar = pairwiseCompCor,

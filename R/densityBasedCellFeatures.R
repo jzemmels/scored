@@ -82,7 +82,7 @@ feature_densityBased_all <- function(comparisonData_cellBased,eps,minPts,method 
                   clusterSize = feature_densityBased_clusterSize(cluster=cluster,
                                                                  direction=direction),
                   clusterInd = !is.na(clusterSize)) %>%
-    dplyr::select(id_cols,thetaDiff,translationDiff,clusterSize) %>%
+    dplyr::select(id_cols,thetaDiff,translationDiff,clusterSize,clusterInd) %>%
     dplyr::distinct()
 
 }

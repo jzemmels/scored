@@ -25,7 +25,7 @@ feature_aLaCarte <- function(comparisonData,features = "all",id_cols = NULL,quie
     # features. They aren't needed for this step
     if(any(c("cellHeightValues","alignedTargetCell") %in% names(comparisonData))){
       compData <- comparisonData %>%
-        select(-c(cellHeightValues,alignedTargetCell))
+        dplyr::select(-c(cellHeightValues,alignedTargetCell))
     }
     else{
       compData <- comparisonData
@@ -36,7 +36,7 @@ feature_aLaCarte <- function(comparisonData,features = "all",id_cols = NULL,quie
 
     aLaCarteFeatures <- bind_cols(aLaCarteFeatures,
                                   registrationFeatures %>%
-                                    select(-direction))
+                                    dplyr::select(-direction))
 
   }
 
@@ -46,7 +46,7 @@ feature_aLaCarte <- function(comparisonData,features = "all",id_cols = NULL,quie
 
     if(any(c("cellHeightValues","alignedTargetCell") %in% names(comparisonData))){
       compData <- comparisonData %>%
-        select(-c(cellHeightValues,alignedTargetCell))
+        dplyr::select(-c(cellHeightValues,alignedTargetCell))
     }
     else{
       compData <- comparisonData
@@ -99,11 +99,11 @@ feature_aLaCarte <- function(comparisonData,features = "all",id_cols = NULL,quie
 
     aLaCarteFeatures <- bind_cols(aLaCarteFeatures,
                                   diagnosticFeatures %>%
-                                    select(-direction))
+                                    dplyr::select(-direction))
 
   }
 
   return(aLaCarteFeatures %>%
-           select(c(direction,everything())))
+           dplyr::select(c(direction,everything())))
 
 }

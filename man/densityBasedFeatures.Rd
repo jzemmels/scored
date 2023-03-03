@@ -60,7 +60,7 @@ non-numeric (i.e., NA, NULL) value}
 \item{theta}{tibble column containing estimated rotations}
 }
 \description{
-The \code{feature_densityBased_all} function calculates the three density-based
+The \code{feature_densityBased_all} function calculates all of the density-based
 features in one call. Calculate each feature individually using the
 \code{feature_densityBased_thetaDiff}, \code{feature_densityBased_translationDiff}, and
 \code{feature_densityBased_clusterSize} functions. The \code{densityBasedClusters} and

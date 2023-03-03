@@ -7,30 +7,26 @@
 \alias{feature_visualDiagnostic_scanDifferenceCor}
 \title{Calculate features based on visual diagnostic plots}
 \usage{
-feature_visualDiagnostic_all(
-  comparisonData,
-  thresholdMultiplier = 1,
-  id_cols = NULL
-)
+feature_visualDiagnostic_all(comparisonData, threshold = 1, id_cols = NULL)
 
 feature_visualDiagnostic_filteredRatio(
   cellHeightValues,
   alignedTargetCell,
-  thresholdMultiplier = 1
+  threshold = 1
 )
 
 feature_visualDiagnostic_neighborhoodSizeSummary(
   cellHeightValues,
   alignedTargetCell,
   summaryFun = mean,
-  thresholdMultiplier = 1,
+  threshold = 1,
   imputeVal = NA
 )
 
 feature_visualDiagnostic_scanDifferenceCor(
   cellHeightValues,
   alignedTargetCell,
-  thresholdMultiplier = 1,
+  threshold = 1,
   imputeVal = NA
 )
 }
@@ -39,9 +35,11 @@ feature_visualDiagnostic_scanDifferenceCor(
 \code{comparison_cellBased()} or \code{comparison_fullScan()} functions that contains
 results from the cell-based or full scan comparison procedure}
 
-\item{thresholdMultiplier}{the default filtering threshold is equal to the
-standard deviation of the joint x3p1 and x3p2 surface matrix values. This
-argument can be used to scale this threshold}
+\item{threshold}{the default filtering threshold. Defaults to a scalar (1
+micron = 1e-6 meters), but can also be set to a scalar-valued function that
+takes x3p1 and x3p2 as arguments. For example, threshold =
+impressions::x3p_sd will use the joint standard deviation of x3p1 and x3p2
+as the threshold.}
 
 \item{id_cols}{column names in the comparisonData tibble that uniquely
 identify each observation. These are returned along with the computed

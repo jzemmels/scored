@@ -9,6 +9,7 @@ or full scan comparison procedure}
 comparison_cellBased(
   reference,
   target,
+  direction = "one",
   thetas = seq(-30, 30, by = 3),
   numCells = c(8, 8),
   maxMissingProp = 0.99,

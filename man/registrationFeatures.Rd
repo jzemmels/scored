@@ -28,7 +28,7 @@ statistics}
 \item{cellIndex}{tibble column containing cell indices}
 
 \item{direction}{tibble column indicating whether the associated row came from
-the "reference vs. target" or "target vs. reference" comparison}
+the "reference_vs_target" or "target_vs_reference" comparison}
 
 \item{fft_ccf}{tibble column containing cross-correlation function values}
 

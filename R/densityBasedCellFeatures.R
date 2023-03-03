@@ -1,6 +1,6 @@
 #'Calculate features using density-based clustering algorithms
 #'
-#'The `feature_densityBased_all` function calculates the three density-based
+#'The `feature_densityBased_all` function calculates all of the density-based
 #'features in one call. Calculate each feature individually using the
 #'`feature_densityBased_thetaDiff`, `feature_densityBased_translationDiff`, and
 #'`feature_densityBased_clusterSize` functions. The `densityBasedClusters` and

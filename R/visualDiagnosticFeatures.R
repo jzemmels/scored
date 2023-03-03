@@ -8,9 +8,11 @@
 #'@param comparisonData tibble such as one returned by the
 #'  `comparison_cellBased()` or `comparison_fullScan()` functions that contains
 #'  results from the cell-based or full scan comparison procedure
-#'@param thresholdMultiplier the default filtering threshold is equal to the
-#'  standard deviation of the joint x3p1 and x3p2 surface matrix values. This
-#'  argument can be used to scale this threshold
+#' @param threshold the default filtering threshold. Defaults to a scalar (1
+#'   micron = 1e-6 meters), but can also be set to a scalar-valued function that
+#'   takes x3p1 and x3p2 as arguments. For example, threshold =
+#'   impressions::x3p_sd will use the joint standard deviation of x3p1 and x3p2
+#'   as the threshold.
 #'@param id_cols column names in the comparisonData tibble that uniquely
 #'  identify each observation. These are returned along with the computed
 #'  features
@@ -54,24 +56,24 @@
 #'@rdname visualDiagnosticFeatures
 #'@export
 feature_visualDiagnostic_all <- function(comparisonData,
-                                         thresholdMultiplier = 1,
+                                         threshold = 1,
                                          id_cols = NULL){
 
   diagnosticFeatures <- comparisonData %>%
     dplyr::mutate(neighborhoodSizeAve = feature_visualDiagnostic_neighborhoodSizeSummary(cellHeightValues = cellHeightValues,
                                                                                          alignedTargetCell = alignedTargetCell,
                                                                                          summaryFun = mean,
-                                                                                         thresholdMultiplier = thresholdMultiplier),
+                                                                                         threshold = threshold),
                   neighborhoodSizeSD = feature_visualDiagnostic_neighborhoodSizeSummary(cellHeightValues = cellHeightValues,
                                                                                         alignedTargetCell = alignedTargetCell,
                                                                                         summaryFun = sd,
-                                                                                        thresholdMultiplier = thresholdMultiplier),
+                                                                                        threshold = threshold),
                   differenceCor = feature_visualDiagnostic_scanDifferenceCor(cellHeightValues = cellHeightValues,
                                                                              alignedTargetCell = alignedTargetCell,
-                                                                             thresholdMultiplier = thresholdMultiplier),
+                                                                             threshold = threshold),
                   filteredRatio = feature_visualDiagnostic_filteredRatio(cellHeightValues = cellHeightValues,
                                                                          alignedTargetCell = alignedTargetCell,
-                                                                         thresholdMultiplier = thresholdMultiplier))
+                                                                         threshold = threshold))
 
   if(!is.null(id_cols)){
     diagnosticFeatures <- dplyr::group_by(diagnosticFeatures,id_cols)
@@ -93,13 +95,18 @@ feature_visualDiagnostic_all <- function(comparisonData,
 #' @export
 feature_visualDiagnostic_filteredRatio <- function(cellHeightValues,
                                                    alignedTargetCell,
-                                                   thresholdMultiplier = 1){
+                                                   threshold = 1){
 
   purrr::map2_dbl(cellHeightValues,
                   alignedTargetCell,
                   function(x3p1,x3p2){
 
-                    cutoffThresh <- impressions::x3p_sd(x3p1,x3p2)
+                    if(is.function(threshold)){
+                      cutoffThresh <- threshold(x3p1,x3p2)
+                    }
+                    else{
+                      cutoffThresh <- threshold
+                    }
 
                     averageBinarized <- x3p1 %>%
                       impressions::x3p_to_dataFrame(preserveResolution = FALSE) %>%
@@ -117,14 +124,19 @@ feature_visualDiagnostic_filteredRatio <- function(cellHeightValues,
 feature_visualDiagnostic_neighborhoodSizeSummary <- function(cellHeightValues,
                                                              alignedTargetCell,
                                                              summaryFun = mean,
-                                                             thresholdMultiplier = 1,
+                                                             threshold = 1,
                                                              imputeVal = NA){
 
   purrr::map2_dbl(cellHeightValues,
                   alignedTargetCell,
                   function(x3p1,x3p2){
 
-                    cutoffThresh <- impressions::x3p_sd(x3p1,x3p2)
+                    if(is.function(threshold)){
+                      cutoffThresh <- threshold(x3p1,x3p2)
+                    }
+                    else{
+                      cutoffThresh <- threshold
+                    }
 
                     averageBinarized <- x3p1 %>%
                       impressions::x3p_to_dataFrame(preserveResolution = FALSE) %>%
@@ -179,13 +191,18 @@ feature_visualDiagnostic_neighborhoodSizeSummary <- function(cellHeightValues,
 #' @export
 feature_visualDiagnostic_scanDifferenceCor <- function(cellHeightValues,
                                                        alignedTargetCell,
-                                                       thresholdMultiplier = 1,
+                                                       threshold = 1,
                                                        imputeVal = NA){
 
   purrr::map2_dbl(cellHeightValues,alignedTargetCell,
                   function(x3p1,x3p2){
 
-                    cutoffThresh <- impressions::x3p_sd(x3p1,x3p2)*thresholdMultiplier
+                    if(is.function(threshold)){
+                      cutoffThresh <- threshold(x3p1,x3p2)
+                    }
+                    else{
+                      cutoffThresh <- threshold
+                    }
 
                     x3p1Differences <- impressions::x3p_filter(x3p = x3p1,
                                                                cond = function(x,y,thresh) abs(x - y) > thresh,

@@ -14,7 +14,7 @@ LazyData: true
 Depends: 
     R (>= 2.10)
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Imports: 
     magrittr,
     cmcR,

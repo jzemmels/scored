@@ -1,6 +1,6 @@
-#' Calculate similarity features based on the output of the comparison procedure
+#'Calculate similarity features based on the output of the comparison procedure
 #'
-#' @name feature_aLaCarte
+#'@name feature_aLaCarte
 #'
 #'@param comparisonData tibble such as one returned by the
 #'  `comparison_cellBased()` or `comparison_fullScan()` functions that contains
@@ -9,9 +9,16 @@
 #'@param id_cols variable(s) to group by prior to calculating the summary
 #'  statistics
 #'@param quiet Boolean to suppress function messages
-#'@param ... additional parameters for the feature calculation functions
+#'@param ... additional parameters for the feature calculation functions. See
+#'  notes for possible additional parameters.
 #'
-#' @export
+#'@note Each additional parameter should be passed as a single argument.
+#'  Possible parameters are "eps" and "minPts" used in the density-based feature
+#'  calculation and "threshold" used in the visual diagnostic feature
+#'  calculation. See the documentation for feature_densityBased_all or
+#'  feature_visualDiagnostic_all to learn more about these parameters.
+#'
+#'@export
 
 feature_aLaCarte <- function(comparisonData,features = "all",id_cols = NULL,quiet = FALSE,...){
 
@@ -91,10 +98,20 @@ feature_aLaCarte <- function(comparisonData,features = "all",id_cols = NULL,quie
 
     stopifnot("cellHeightValues" %in% names(comparisonData) & "alignedTargetCell" %in% names(comparisonData))
 
+    if(is.null(optionalParams$threshold)){
+
+      if(!quiet){message("Parameter 'threshold' not specified. Defaulting to threshold = 1.")}
+
+      optionalParams$threshold <- 1
+
+    }
+    stopifnot(is.function(optionalParams$threshold) | is.numeric(optionalParams$threshold))
+
     diagnosticFeatures <- feature_visualDiagnostic_all(comparisonData = comparisonData %>%
                                                          group_by(direction,cellIndex) %>%
                                                          filter(fft_ccf == max(fft_ccf)) %>%
                                                          group_by(direction),
+                                                       threshold = optionalParams$threshold,
                                                        id_cols = id_cols)
 
     aLaCarteFeatures <- bind_cols(aLaCarteFeatures,

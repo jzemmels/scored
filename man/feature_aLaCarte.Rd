@@ -24,8 +24,16 @@ statistics}
 
 \item{quiet}{Boolean to suppress function messages}
 
-\item{...}{additional parameters for the feature calculation functions}
+\item{...}{additional parameters for the feature calculation functions. See
+notes for possible additional parameters.}
 }
 \description{
 Calculate similarity features based on the output of the comparison procedure
+}
+\note{
+Each additional parameter should be passed as a single argument.
+Possible parameters are "eps" and "minPts" used in the density-based feature
+calculation and "threshold" used in the visual diagnostic feature
+calculation. See the documentation for feature_densityBased_all or
+feature_visualDiagnostic_all to learn more about these parameters.
 }

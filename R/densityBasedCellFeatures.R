@@ -95,7 +95,7 @@ feature_densityBased_thetaDiff <- function(estimatedThetas,direction,imputeVal =
   theta1 <- unique(estimatedThetas[direction == "reference_vs_target"])
   theta2 <- unique(estimatedThetas[direction == "target_vs_reference"])
 
-  if(any(!is.numeric(c(theta1,theta2))) | any(is.na(c(theta1,theta2)))){
+  if(any(!is.numeric(c(theta1,theta2))) | any(is.na(c(theta1,theta2))) | (length(theta1) < 1 | length(theta2) < 1)){
     return(imputeVal)
   }
 

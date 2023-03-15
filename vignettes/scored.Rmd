@@ -48,6 +48,7 @@ The `scored` package contains functions that accept the `comparisonData` feature
 ```{r}
 comparisonData <- comparison_cellBased(reference = K013sA1,target = K013sA2,
                                        thetas = seq(-30,30,by = 3),
+                                       direction = "both",
                                        returnX3Ps = FALSE)
 
 comparisonData
@@ -67,6 +68,7 @@ The `feature_registration_all()` function calculates seven registration-based fe
 
 ```{r}
 comparisonData %>%
+  group_by(direction) %>%
   feature_registration_all()
 ```
 
@@ -75,11 +77,12 @@ That is, instead of dividing the scans into a grid of cells and estimating the a
 We expect the correlation to be large if the two scans are truly matching.
 
 ```{r}
-comparisonDat_fullScan <- comparison_fullScan(K013sA1,K013sA2,returnX3Ps = FALSE)
+comparisonDat_fullScan <- comparison_fullScan(K013sA1,K013sA2,
+                                              returnX3Ps = FALSE)
 
 comparisonDat_fullScan %>%
-  feature_registration_all() %>%
-  select(ccfMean,pairwiseCompCorMean)
+  group_by(direction) %>%
+  feature_registration_all()
 ```
 
 ### Density-based Features

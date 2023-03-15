@@ -21,6 +21,12 @@ template:
     btn-border-radius: 0.25rem
 
 reference:
+- title: Helpers
+  contents:
+  - comparison_fullScan
+  - comparison_cellBased
+  - feature_aLaCarte
+
 - title: Density-Based Features
   contents:
   - feature_densityBased_all
@@ -32,16 +38,12 @@ reference:
 
 - title: Registration-Based Features
   contents:
-  - feature_registration_summary
   - feature_registration_all
+  - feature_registration_summary
 
 - title: Visual Diagnostic-Based Features
   contents:
   - feature_visualDiagnostic_all
   - feature_visualDiagnostic_neighborhoodSizeSummary
   - feature_visualDiagnostic_scanDifferenceCor
-
-- title: Helpers
-  contents:
-  - comparison_cellBased
-  - comparison_fullScan
+  - feature_visualDiagnostic_filteredRatio

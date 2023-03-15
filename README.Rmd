@@ -61,9 +61,8 @@ x3pPlot(K013sA1,K013sA2)
 comparisonData <- comparison_cellBased(reference = K013sA1,target = K013sA2,
                                        numCells = c(8,8),
                                        thetas = seq(-30,30,by = 3),
+                                       direction = "both",
                                        returnX3Ps = TRUE)
-
-# debugonce(feature_visualDiagnostic_neighborhoodSizeSummary)
 
 comparisonData %>%
   group_by(direction) %>%
@@ -81,8 +80,6 @@ comparisonDat_fullScan_estimRotation <- comparison_fullScan(K013sA1,K013sA2,
 
 comparisonDat_fullScan_estimRotation %>%
   group_by(direction) %>%
-  feature_aLaCarte(features = "all",eps = 5,minPts = 5) %>%
-  select(direction,ccfMean,pairwiseCompCorMean,
-         neighborhoodSizeAve_ave,neighborhoodSizeSD_ave,differenceCor_ave)
+  feature_aLaCarte(features = "all",eps = 5,minPts = 5)
 ```
 

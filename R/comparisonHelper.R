@@ -104,7 +104,8 @@ comparison_cellBased <- function(reference,target,
                                                          sideLengthMultiplier = sideLengthMultiplier,
                                                          maxMissingProp = maxMissingProp)
 
-                          })
+                          }) %>%
+      mutate(direction = "reference_vs_target")
 
 
   }

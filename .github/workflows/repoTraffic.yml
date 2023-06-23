@@ -43,4 +43,4 @@ jobs:
         commit_message: 'Push scored traffic data'
     - name: Remove traffic folder
       run: |
-        rm -f /traffic/*
+        rm -rf traffic/

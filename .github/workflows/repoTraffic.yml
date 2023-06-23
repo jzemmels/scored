@@ -1,6 +1,6 @@
 name: "Traffic Monitor"
 
-on: [push]
+on: [push] #
 
 jobs:
   compliance:

@@ -5,4 +5,5 @@ on: [push] #
 jobs:
   compliance:
     uses: jzemmels/impressions/.github/workflows/repoTraffic.yml@main
-    secrets: inherit
+    secrets:
+      envPAT: ${{ secrets.TRAFFIC_ACTION_TOKEN }}

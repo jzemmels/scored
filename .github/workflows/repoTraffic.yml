@@ -1,0 +1,7 @@
+name: "Traffic Monitor"
+
+on: [push]
+
+jobs:
+  compliance:
+    uses: jzemmels/impressions/.github/workflows/repoTraffic.yml@main

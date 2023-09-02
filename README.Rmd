@@ -29,25 +29,34 @@ You can install the development version of scored from [GitHub](https://github.c
 devtools::install_github("jzemmels/scored")
 ```
 
-## Feature Calculation
+## What the heck are you talking about?
 
-As an example, consider two cartridge cases fired from the same Ruger SR9 semiautomatic 9-mm handgun.
-Learn more about the collection of these cartridge cases [here](https://www.ojp.gov/pdffiles1/nij/249874.pdf).
-The cartridge cases are uniquely identified as "K013sA1" and "K013sA2."
-We assume that the markings on these cartridge cases left by the handgun during the firing process are similar.
+A *cartridge case* is the metal casing that holds the projectile, propellant, and primer of a cartridge (you might refer to them colloquially as a "brass" or "shell").
+When a firearm is discharged and the projectile travels out of the barrel, the cartridge case pushes against the back wall of the barrel, known as the *breech face*, with great force.
+Markings on the breech face surface, attributable to manufacturing, use, wear, etc., are "stamped" into the surface of the cartridge case, leaving so-called *breech face impressions*.
+Analogous to a fingerprint, forensic examiners have used these breech face impressions to identify the firearm from which a cartridge case was fired.
+
+It is possible to capture digital representations, such as images or topographic scans, of cartridge case surfaces and compare these representations on a computer.
+We have developed a suite of tools available in this R package for *automatically* comparing cartridge case scans.
+The primary intended use of the `scored` package is to compute numerical features between pairs of cartridge case scans that measure the similarity of their breech face impressions.
+
+## Feature calculation
+
+As an example, consider two cartridge cases fired from the same handgun (see [here](https://www.ojp.gov/pdffiles1/nij/249874.pdf) to learn more).
+The cartridge cases are given unique character-based IDs `K013sA1` and `K013sA2`.
+Because these cartridge cases were fired from the same firearm, we assume that they share similar markings left by the firearm barrel on their surfaces.
+The code below loads important packages and the two cartridge cases.
 
 ```{r setup,warning=FALSE,message=FALSE}
 library(scored)
-
-library(cmcR)
 library(impressions)
 library(tidyverse)
 
 data("K013sA1","K013sA2")
 ```
 
-Below is a visual of the two cartridge case scans.
-Note that these scans have already undergone some preprocessing to emphasize the breech face impression markings.
+Below is a visual of the two cartridge case scans using the `impressions::x3pPlot()` function.
+These scans have already undergone some pre-processing to isolate the breech face impressions, but we skip the details here.
 The similarity between these cartridge cases is not immediately apparent.
 We can calculate similarity features between these two scans using functions available in the `scored` package.
 
@@ -55,7 +64,33 @@ We can calculate similarity features between these two scans using functions ava
 x3pPlot(K013sA1,K013sA2)
 ```
 
-## Cell-Based Features
+### Full-Scan Features
+
+To compare the two cartridge case scans, we first try to align them by determining the rotation/translation at which they are most similar.
+This is a standard image processing technique called *registration* that is implemented in the `comparison_fullScan()` function.
+The `thetas` argument specifies one or more rotation angles (in degrees) that we want to explore for possible registration.
+The `comparison_fullScan()` function performs the registration in both "directions", meaning it first registers `K013sA2` to `K013sA1` and then registers `K013sA1` to `K013sA2`.
+The `direction` column differentiates between these two sets of results.
+The output is a data frame-like `tibble()` object containing results of the registration process, which are discussed in greater detail in the vignettes.
+
+```{r,cache=TRUE}
+comparisonDat_fullScan_estimRotation <- comparison_fullScan(reference = K013sA1,
+                                                            target = K013sA2,
+                                                            thetas = seq(-30,30,by = 3))
+
+head(comparisonDat_fullScan_estimRotation)
+```
+
+```{r}
+comparisonDat_fullScan_estimRotation %>%
+  group_by(direction) %>%
+  feature_aLaCarte(features = "all")
+```
+
+
+### Cell-based features
+
+
 
 ```{r}
 comparisonData <- comparison_cellBased(reference = K013sA1,target = K013sA2,
@@ -70,16 +105,7 @@ comparisonData %>%
 ```
 
 
-## Full-Scan Features
 
 
-```{r}
-comparisonDat_fullScan_estimRotation <- comparison_fullScan(K013sA1,K013sA2,
-                                                            returnX3Ps = TRUE,
-                                                            thetas = -3)
 
-comparisonDat_fullScan_estimRotation %>%
-  group_by(direction) %>%
-  feature_aLaCarte(features = "all",eps = 5,minPts = 5)
-```
 

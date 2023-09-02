@@ -3,6 +3,7 @@
 \name{comparison_cellBased}
 \alias{comparison_cellBased}
 \alias{comparison_fullScan}
+\alias{comparison_aces}
 \title{Estimate the registration between two cartridge case scans using a cell-based
 or full scan comparison procedure}
 \usage{
@@ -23,6 +24,8 @@ comparison_fullScan(
   thetas = seq(-30, 30, by = 3),
   returnX3Ps = TRUE
 )
+
+comparison_aces(..., x3p_labels = NULL, standardize_resolutions = FALSE)
 }
 \arguments{
 \item{reference}{an x3p object}
@@ -45,6 +48,13 @@ be 9 times larger than its paired reference cell.}
 \item{returnX3Ps}{A Boolean to return the cellHeightValues and
 alignedTargetCells for each cell index. Note that setting this argument to
 TRUE is required to calculate the visual diagnostic features}
+
+\item{...}{either a sequence of x3p objects separated by commas like
+'x3p1,x3p2,x3p3,...', a single list of x3p objects separated by commas like
+'list(x3p1,x3p2,x3p3,...)', or a vector of x3p file paths like
+'c("path/to/file1.x3p", "path/to/file2.x3p", "path/to/file3.x3p")'}
+
+\item{x3p_labels}{(optional) character vector of x3p labels}
 }
 \description{
 The \code{comparison_cellBased} function uses a cell-based comparison procedure

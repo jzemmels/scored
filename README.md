@@ -19,28 +19,50 @@ You can install the development version of scored from
 devtools::install_github("jzemmels/scored")
 ```
 
-## Feature Calculation
+## What the heck are you talking about?
 
-As an example, consider two cartridge cases fired from the same Ruger
-SR9 semiautomatic 9-mm handgun. Learn more about the collection of these
-cartridge cases [here](https://www.ojp.gov/pdffiles1/nij/249874.pdf).
-The cartridge cases are uniquely identified as “K013sA1” and “K013sA2.”
-We assume that the markings on these cartridge cases left by the handgun
-during the firing process are similar.
+A *cartridge case* is the metal casing that holds the projectile,
+propellant, and primer of a cartridge (you might refer to them
+colloquially as a “brass” or “shell”). When a firearm is discharged and
+the projectile travels out of the barrel, the cartridge case pushes
+against the back wall of the barrel, known as the *breech face*, with
+great force. Markings on the breech face surface, attributable to
+manufacturing, use, wear, etc., are “stamped” into the surface of the
+cartridge case, leaving so-called *breech face impressions*. Analogous
+to a fingerprint, forensic examiners have used these breech face
+impressions to identify the firearm from which a cartridge case was
+fired.
+
+It is possible to capture digital representations, such as images or
+topographic scans, of cartridge case surfaces and compare these
+representations on a computer. We have developed a suite of tools
+available in this R package for *automatically* comparing cartridge case
+scans. The primary intended use of the `scored` package is to compute
+numerical features between pairs of cartridge case scans that measure
+the similarity of their breech face impressions.
+
+## Feature calculation
+
+As an example, consider two cartridge cases fired from the same handgun
+(see [here](https://www.ojp.gov/pdffiles1/nij/249874.pdf) to learn
+more). The cartridge cases are given unique character-based IDs
+`K013sA1` and `K013sA2`. Because these cartridge cases were fired from
+the same firearm, we assume that they share similar markings left by the
+firearm barrel on their surfaces. The code below loads important
+packages and the two cartridge cases.
 
 ``` r
 library(scored)
-
-library(cmcR)
 library(impressions)
 library(tidyverse)
 
 data("K013sA1","K013sA2")
 ```
 
-Below is a visual of the two cartridge case scans. Note that these scans
-have already undergone some preprocessing to emphasize the breech face
-impression markings. The similarity between these cartridge cases is not
+Below is a visual of the two cartridge case scans using the
+`impressions::x3pPlot()` function. These scans have already undergone
+some pre-processing to isolate the breech face impressions, but we skip
+the details here. The similarity between these cartridge cases is not
 immediately apparent. We can calculate similarity features between these
 two scans using functions available in the `scored` package.
 
@@ -50,7 +72,64 @@ x3pPlot(K013sA1,K013sA2)
 
 <img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
 
-## Cell-Based Features
+### Full-Scan Features
+
+To compare the two cartridge case scans, we first try to align them by
+determining the rotation/translation at which they are most similar.
+This is a standard image processing technique called *registration* that
+is implemented in the `comparison_fullScan()` function. The `thetas`
+argument specifies one or more rotation angles (in degrees) that we want
+to explore for possible registration. The `comparison_fullScan()`
+function performs the registration in both “directions”, meaning it
+first registers `K013sA2` to `K013sA1` and then registers `K013sA1` to
+`K013sA2`. The `direction` column differentiates between these two sets
+of results. The output is a data frame-like `tibble()` object containing
+results of the registration process, which are discussed in greater
+detail in the vignettes.
+
+``` r
+comparisonDat_fullScan_estimRotation <- comparison_fullScan(reference = K013sA1,
+                                                            target = K013sA2,
+                                                            thetas = seq(-30,30,by = 3))
+
+head(comparisonDat_fullScan_estimRotation)
+#> # A tibble: 6 × 12
+#>   cellIndex     x     y fft_ccf pairwiseCompCor theta refMissingCount
+#>   <chr>     <dbl> <dbl>   <dbl>           <dbl> <dbl>           <dbl>
+#> 1 1, 1        -91  -130  0.0692          0.470    -30          126310
+#> 2 1, 1         -6    -8  0.0654          0.0869   -27          126310
+#> 3 1, 1        -87  -110  0.0632          0.363    -24          126310
+#> 4 1, 1        -83   -99  0.0717          0.386    -21          126310
+#> 5 1, 1        -77   -89  0.0684          0.351    -18          126310
+#> 6 1, 1         19     8  0.0714          0.145    -15          126310
+#> # ℹ 5 more variables: targMissingCount <dbl>, jointlyMissing <dbl>,
+#> #   cellHeightValues <named list>, alignedTargetCell <named list>,
+#> #   direction <chr>
+```
+
+``` r
+comparisonDat_fullScan_estimRotation %>%
+  group_by(direction) %>%
+  feature_aLaCarte(features = "all")
+#> Parameter 'eps' not specified. Defaulting to eps = 5.
+#> Parameter 'minPts' not specified. Defaulting to minPts = 5.
+#> Only one cell found. Skipping the density-based feature calculation.
+#> Parameter 'threshold' not specified. Defaulting to threshold = 1.
+#>             direction   ccfMean ccfSD pairwiseCompCorAve pairwiseCompCorSD
+#> 1 reference_vs_target 0.2695168    NA          0.3998884                NA
+#> 2 target_vs_reference 0.2718716    NA          0.4096494                NA
+#>   xTransSD yTransSD thetaRotSD neighborhoodSizeAve_ave neighborhoodSizeAve_sd
+#> 1       NA       NA         NA               113.09091                     NA
+#> 2       NA       NA         NA                97.35443                     NA
+#>   neighborhoodSizeSD_ave neighborhoodSizeSD_sd differenceCor_ave
+#> 1               940.7352                    NA        0.07415392
+#> 2               822.4063                    NA        0.08575254
+#>   differenceCor_sd filteredRatio_ave filteredRatio_sd
+#> 1               NA          4.752316               NA
+#> 2               NA          4.858481               NA
+```
+
+### Cell-based features
 
 ``` r
 comparisonData <- comparison_cellBased(reference = K013sA1,target = K013sA2,
@@ -78,30 +157,4 @@ comparisonData %>%
 #>   filteredRatio_sd
 #> 1         2.013289
 #> 2         1.405319
-```
-
-## Full-Scan Features
-
-``` r
-comparisonDat_fullScan_estimRotation <- comparison_fullScan(K013sA1,K013sA2,
-                                                            returnX3Ps = TRUE,
-                                                            thetas = -3)
-
-comparisonDat_fullScan_estimRotation %>%
-  group_by(direction) %>%
-  feature_aLaCarte(features = "all",eps = 5,minPts = 5)
-#> Only one cell found. Skipping the density-based feature calculation.
-#> Parameter 'threshold' not specified. Defaulting to threshold = 1.
-#>             direction    ccfMean ccfSD pairwiseCompCorAve pairwiseCompCorSD
-#> 1 reference_vs_target 0.09550923    NA          0.1401430                NA
-#> 2 target_vs_reference 0.27187163    NA          0.4096494                NA
-#>   xTransSD yTransSD thetaRotSD neighborhoodSizeAve_ave neighborhoodSizeAve_sd
-#> 1       NA       NA         NA                74.39877                     NA
-#> 2       NA       NA         NA                97.35443                     NA
-#>   neighborhoodSizeSD_ave neighborhoodSizeSD_sd differenceCor_ave
-#> 1               883.0723                    NA       -0.03441979
-#> 2               822.4063                    NA        0.08575254
-#>   differenceCor_sd filteredRatio_ave filteredRatio_sd
-#> 1               NA          2.534994               NA
-#> 2               NA          4.858481               NA
 ```

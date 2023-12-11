@@ -23,6 +23,8 @@ Imports:
     dplyr,
     purrr,
     MASS
+Remotes: 
+    jzemmels/impressions
 Suggests: 
     knitr,
     rmarkdown
